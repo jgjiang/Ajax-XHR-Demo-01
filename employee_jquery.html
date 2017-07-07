@@ -65,7 +65,7 @@
         $('#search').click(function () {
             $.ajax({
                 type: 'GET',
-                url: "server.php?number="+$('#keyword').val(),
+                url: "server.php?number="+$('#keyword').val(),  //add parameters in url for GET request
                 dataType: "JSON",
                 success:function (data) {
                     if(data.success){
@@ -80,10 +80,43 @@
 
             }
 
+            );
+        });
+
+        $('#save').click(function () {
+            $.ajax({
+                    type: 'POST',
+                    url: "server.php",
+                    data:{
+                        name:$('#name').val(),
+                        number:$('#number').val(),
+                        sex:$('#sex').val(),
+                        job:$('#job').val()
+                    },
+                    dataType: "JSON",
+                    success:function (data) {
+                        if(data.success){
+                            $('#createResult').html(data.msg);
+                        } else {
+                            $('#createResult').html("出现错误" + data.msg);
+                        }
+                    },
+                    error:function (jqXHR) {
+                        alert("Error: " + jqXHR.status)
+                    }
+
+                }
 
             );
         });
+
+
+
+
+
+
     });
+
 
 
 
