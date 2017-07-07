@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <title>Employee Form</title>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="panel panel-default col-md-7">
+            <div class="panel-heading">
+                Search Employees
+            </div>
+
+            <div class="panel-body">
+                <label for="keyword">Please Enter Employee Number</label>
+                <input type="text" id="keyword" class="form-control">
+                <button id="search" class="btn btn-primary">Search</button>
+                <p id="searchResult"></p>
+            </div>
+
+        </div>
+
+
+        <div class="panel panel-default col-md-7">
+            <form>
+                <div class="form-group">
+                    <label for="name">Employee Name</label>
+                    <input type="text" id="name" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="number">Employee Number</label>
+                    <input type="text" id="number" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="sex">Employee Sex</label>
+                    <input type="text" id="sex" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="job">Employee Job Title</label>
+                    <input type="text" id="job" class="form-control">
+                </div>
+
+                <button type="button" class="btn btn-primary" id="save">Submit</button>
+                <p id="createResult"></p>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    document.getElementById('search').onclick = function () {
+
+        var request = new XMLHttpRequest();
+        var url = 'server.php?number='+document.getElementById('keyword').value;
+        request.open('GET',url,true);
+        request.send();
+
+        request.onreadystatechange = function () {
+            if(request.readyState === 4){
+                if (request.status===200){
+                    var jsonData = JSON.parse(request.responseText);
+
+                    if(jsonData.success) {
+                        document.getElementById('searchResult').innerHTML= jsonData.msg;
+                    } else {
+                        document.getElementById('searchResult').innerHTML= "出现错误: " + jsonData.msg;
+                    }
+
+
+                } else {
+                    alert("Error: " + request.status)
+                }
+            }
+        }
+    }
+
+    document.getElementById('save').onclick = function () {
+        var request = new XMLHttpRequest();
+        var url = 'server.php';
+        request.open('POST',url);
+        //request.setRequestHeader('Content-type','application/a-www-form-urllen');
+        var data = "name="+document.getElementById('name').value
+            + "&number="+document.getElementById('number').value
+            + "&sex="+document.getElementById('sex').value
+            + "&job="+document.getElementById('job').value;
+        request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+
+        request.send(data);
+
+        request.onreadystatechange = function () {
+            if(request.readyState === 4){
+                if (request.status===200){
+                    var jsonData = JSON.parse(request.responseText);
+
+                    if (jsonData.success){
+                        document.getElementById('createResult').innerHTML= jsonData.msg;
+                    } else {
+                        document.getElementById('createResult').innerHTML= "出现错误：" + jsonData.msg;
+                    }
+
+                } else {
+                    alert("Error: " + request.status)
+                }
+            }
+        }
+    }
+
+</script>
+
+</body>
+
+
+</html>
